@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "Glados",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "glados.py",
+            "justMyCode": false,
+            "python": "${command:python.interpreterPath}"
+        },
+    ]
+}

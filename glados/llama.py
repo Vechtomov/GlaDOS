@@ -6,9 +6,10 @@ import requests
 
 
 class LlamaServer:
-    def __init__(self, llama_server_path, port=8080, model=None):
+    def __init__(self, llama_server_path, host="localhost", port=8080, model=None):
         # Initialize the model and process
         self.model = model
+        self.host = host
         self.port = port
         self.process = None
 
@@ -22,8 +23,9 @@ class LlamaServer:
         if model is not None:
             self.model = model
         command = [os.path.join(self.llama_server_path, "server"), "-m"] + [self.model]
+        command += ["--host", self.host, "--port", str(self.port)]
         if use_gpu:
-            command += ["-ngl", "1000"]
+            command += ["-ngl", "1000", "-fa", "-c", "8192"]
         print(command)
         self.process = subprocess.Popen(
             command,
@@ -39,7 +41,7 @@ class LlamaServer:
             attempts = 0
             while True:
                 try:
-                    response = requests.get("http://localhost:8080/health")
+                    response = requests.get(f"http://{self.host}:{self.port}/health")
 
                     if response.status_code == 200:
                         return True
